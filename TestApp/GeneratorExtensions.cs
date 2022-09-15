@@ -13,7 +13,7 @@ namespace TestApp
             services.AddHttpClient(RequestGenerator.ClientName, (isp, client) => 
             {            
                 IOptions<RequestOptions> requestOptions = isp.GetRequiredService<IOptions<RequestOptions>>();
-                client.BaseAddress = requestOptions?.Value.BaseUri ?? throw new ArgumentNullException(nameof(requestOptions));
+                client.BaseAddress = new Uri($"{requestOptions?.Value.Host}:{requestOptions?.Value.Port}") ?? throw new ArgumentNullException(nameof(requestOptions));
             });
 
             services.AddHostedService<RequestGenerator>((isp) =>

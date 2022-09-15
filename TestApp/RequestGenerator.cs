@@ -26,16 +26,24 @@ namespace TestApp
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(delay);
-                HttpResponseMessage responseMessage = await _httpClient.PostAsync(_request, null, stoppingToken);
+                try
+                {
+                    HttpResponseMessage responseMessage = await _httpClient.PostAsync(_request, null, stoppingToken);
 
-                if (!responseMessage.IsSuccessStatusCode)
-                {
-                    _logger.LogError("Not successed request");
+                    if (!responseMessage.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("Not successed request");
+                    }
+                    else
+                    {
+                        _logger.LogInformation(await responseMessage.Content.ReadAsStringAsync(stoppingToken));
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    _logger.LogInformation(await responseMessage.Content.ReadAsStringAsync(stoppingToken));
+                    _logger.LogError($"Exception trown: {ex.Message}");
                 }
+                
             }
         }
 
